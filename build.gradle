@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'net.serenity-bdd.serenity-gradle-plugin' version '3.2.5'
+    id 'com.diffplug.spotless' version '6.16.0'
+    id 'idea'
+}
+
+defaultTasks 'clean', 'test', 'aggregate'
+
+group 'org.exampl'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+spotless {
+    java {
+        googleJavaFormat('1.15.0')
+        spotlessJavaApply
+        removeUnusedImports()
+        lineEndings 'WINDOWS'
+    }
+}
+
+serenity {
+    reports = ["single-page-html"]
+}
+
+dependencies {
+    implementation "com.github.javafaker:javafaker:1.0.2"
+    testImplementation "net.serenity-bdd:serenity-core:3.2.5",
+            "net.serenity-bdd:serenity-cucumber:3.2.5",
+            "net.serenity-bdd:serenity-screenplay:3.2.5",
+            "net.serenity-bdd:serenity-screenplay-webdriver:3.2.5",
+            "net.serenity-bdd:serenity-ensure:3.2.5"
+    "net.serenity-bdd:serenity-single-page-report:3.2.5"
+    "org.assertj:assertj-core:3.8.0"
+    "junit:junit:4.13.1"
+}
+
+test {
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)
